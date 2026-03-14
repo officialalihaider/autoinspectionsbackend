@@ -18,10 +18,11 @@ jobs:
         with:
           node-version: 18
 
-      - name: Copy SSH Key
-        uses: webfactory/ssh-agent@v0.8.1
+      - name: Setup SSH agent
+        uses: webfactory/ssh-agent@v0.8.2
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
+
 
       - name: Deploy to Server
         uses: appleboy/ssh-action@v0.1.6
