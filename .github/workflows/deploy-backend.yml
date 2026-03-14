@@ -1,0 +1,38 @@
+name: Auto Deploy Backend
+
+on:
+  push:
+    branches:
+      - main  # ya jis branch se deploy karna hai
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Copy SSH Key
+        uses: webfactory/ssh-agent@v0.8.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_KEY }}
+
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: 54.85.39.122
+          username: ubuntu
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          script: |
+            cd ~/autoinspectionsbackend
+            git pull origin main
+            npm install
+            pm2 restart autoinspections || pm2 start server.js --name autoinspections
+            pm2 save
