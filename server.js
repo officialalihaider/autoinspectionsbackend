@@ -12,6 +12,10 @@ app.use(cors({ origin: '*' }));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
+app.get("/", (req, res) => {
+  res.send("AutoGemz Backend Running Successfully 🚗");
+});
+
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/inspections', auth, require('./routes/inspectionRoutes'));
 app.use('/api/users', auth, require('./routes/userRoutes'));
