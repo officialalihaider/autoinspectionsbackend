@@ -9,6 +9,7 @@ const auth = require('./middlewares/authMiddleware');
 app.use(express.static("public"));
 
 // app.use(cors({ origin: '*' }));
+
 app.use(cors({
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
