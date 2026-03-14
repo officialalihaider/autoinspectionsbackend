@@ -6,6 +6,8 @@ require('dotenv').config();
 const app = express();
 const auth = require('./middlewares/authMiddleware');
 
+app.use(express.static("public"));
+
 app.use(cors({ origin: '*' }));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
