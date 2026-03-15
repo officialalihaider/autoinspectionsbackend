@@ -1,36 +1,24 @@
-name: Auto Deploy Backend
+name: Deploy Backend
 
 on:
   push:
     branches:
-      - main  # jab bhi main branch me push ho
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
-    - name: Setup SSH agent
-      uses: webfactory/ssh-agent@v0
-      with:
-        ssh-private-key: ${{ secrets.SSH_KEY }}
-
-    - name: Deploy to server
-      run: |
-        ssh -o StrictHostKeyChecking=no ubuntu@54.85.39.122 << 'ENDSSH'
-          echo "Pulling latest code..."
-          cd ~/autoinspectionsbackend || exit
-          git reset --hard
-          git pull origin main
-
-          echo "Installing dependencies..."
-          npm install --legacy-peer-deps
-
-          echo "Restarting backend with PM2..."
-          pm2 restart autoinspections || pm2 start server.js --name autoinspections
-
-          echo "✅ Deployment completed!"
-        ENDSSH
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: 54.85.39.122
+          username: ubuntu
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: 22
+          script: |
+            cd ~/autoinspectionsbackend
+            git pull origin main
+            npm install
+            pm2 restart autoinspections || pm2 start server.js --name autoinspections
